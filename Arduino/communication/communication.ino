@@ -1,10 +1,10 @@
 #include <WiFi.h>
 #include <WebSocketsClient.h>
 
-const char* ssid = "vivo 1951";
-const char* password = "arpit2005";
+const char* ssid = "Monchu 2.4G";
+const char* password = "arpit2005@";
 
-const char* host = "10.216.152.154";
+const char* host = "192.168.0.19";
 const uint16_t port = 8080;
 
 WebSocketsClient webSocket;
@@ -37,6 +37,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
             if (msg.startsWith("ROLE:"))
             {
                 role = msg.substring(5);
+
                 Serial.print("Role assigned: ");
                 Serial.println(role);
             }
@@ -45,15 +46,28 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
             {
                 int units = msg.substring(6).toInt();
 
-                Serial.print("Energy units received: ");
+                Serial.print("Units Input: ");
                 Serial.println(units);
+
+                if (role == "sender")
+                {
+                    Serial.println("Sender received units command");
+                }
 
                 if (role == "receiver")
                 {
-                    Serial.println("Receiver accepting units");
+                    Serial.println("Receiver acknowledged units");
                 }
+
+                webSocket.sendTXT("UNITS_RECEIVED");
             }
 
+            break;
+        }
+
+        case WStype_DISCONNECTED:
+        {
+            Serial.println("Disconnected from server");
             break;
         }
 
@@ -83,21 +97,4 @@ void setup()
 void loop()
 {
     webSocket.loop();
-
-    if (role == "sender")
-    {
-        static bool sent = false;
-
-        if (!sent)
-        {
-            int units = 10;
-
-            String msg = "UNITS:" + String(units);
-            webSocket.sendTXT(msg);
-
-            Serial.println("Sent units: " + String(units));
-
-            sent = true;
-        }
-    }
 }
