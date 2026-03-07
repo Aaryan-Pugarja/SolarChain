@@ -1,7 +1,8 @@
 import websocket
 
 ws = websocket.WebSocket()
-ws.connect("ws://192.168.0.19:8080/")
+ip = "10.216.152.154"
+ws.connect(f"ws://{ip}:8080/")
 
 ws.send("on")
 # ws.send("off")

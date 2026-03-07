@@ -1,27 +1,32 @@
 #include <WiFi.h>
 #include <WebSocketsClient.h>
 
-const char* ssid = "Monchu 2.4G";
-const char* password = "arpit2005@";
+const char* ssid = "vivo 1951";
+const char* password = "arpit2005";
 
-const char* host = "192.168.0.19";
+const char* host = "10.216.152.154";
 const uint16_t port = 8080;
 
 WebSocketsClient webSocket;
 
 const int relayPin = 5;
 
+String deviceId;
+
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 
   switch(type) {
 
     case WStype_CONNECTED:
-      Serial.println("Connected to Flask WebSocket server");
-      webSocket.sendTXT("ESP_CONNECTED");
+      Serial.println("Connected to server");
+
+      deviceId = WiFi.macAddress();
+      webSocket.sendTXT("ESP_CONNECTED:" + deviceId);
+
       break;
 
     case WStype_DISCONNECTED:
-      Serial.println("Disconnected from server");
+      Serial.println("Disconnected");
       break;
 
     case WStype_TEXT: {
@@ -54,16 +59,15 @@ void setup() {
 
   WiFi.begin(ssid, password);
 
-  Serial.print("Connecting to WiFi");
-
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
 
   Serial.println("\nWiFi connected");
-  Serial.print("ESP32 IP: ");
-  Serial.println(WiFi.localIP());
+
+  Serial.print("MAC: ");
+  Serial.println(WiFi.macAddress());
 
   webSocket.begin(host, port, "/");
   webSocket.onEvent(webSocketEvent);
