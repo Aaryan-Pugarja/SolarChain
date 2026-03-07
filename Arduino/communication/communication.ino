@@ -9,70 +9,95 @@ const uint16_t port = 8080;
 
 WebSocketsClient webSocket;
 
-const int relayPin = 5;
+String role = "unknown";
+String mac;
 
-String deviceId;
+void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
+{
+    switch(type)
+    {
 
-void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
+        case WStype_CONNECTED:
+        {
+            Serial.println("Connected to server");
 
-  switch(type) {
+            mac = WiFi.macAddress();
+            webSocket.sendTXT("REGISTER:" + mac);
 
-    case WStype_CONNECTED:
-      Serial.println("Connected to server");
+            break;
+        }
 
-      deviceId = WiFi.macAddress();
-      webSocket.sendTXT("ESP_CONNECTED:" + deviceId);
+        case WStype_TEXT:
+        {
+            String msg = String((char*)payload);
 
-      break;
+            Serial.print("Received: ");
+            Serial.println(msg);
 
-    case WStype_DISCONNECTED:
-      Serial.println("Disconnected");
-      break;
+            if (msg.startsWith("ROLE:"))
+            {
+                role = msg.substring(5);
+                Serial.print("Role assigned: ");
+                Serial.println(role);
+            }
 
-    case WStype_TEXT: {
+            if (msg.startsWith("UNITS:"))
+            {
+                int units = msg.substring(6).toInt();
 
-      String msg = String((char*)payload);
+                Serial.print("Energy units received: ");
+                Serial.println(units);
 
-      Serial.print("Received: ");
-      Serial.println(msg);
+                if (role == "receiver")
+                {
+                    Serial.println("Receiver accepting units");
+                }
+            }
 
-      if (msg == "on") {
-        digitalWrite(relayPin, HIGH);
-      }
+            break;
+        }
 
-      if (msg == "off") {
-        digitalWrite(relayPin, LOW);
-      }
+        default:
+            break;
+    }
+}
 
-      break;
+void setup()
+{
+    Serial.begin(115200);
+
+    WiFi.begin(ssid, password);
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
     }
 
-    default:
-      break;
-  }
+    Serial.println("\nWiFi connected");
+
+    webSocket.begin(host, port, "/");
+    webSocket.onEvent(webSocketEvent);
 }
 
-void setup() {
+void loop()
+{
+    webSocket.loop();
 
-  Serial.begin(115200);
-  pinMode(relayPin, OUTPUT);
+    if (role == "sender")
+    {
+        static bool sent = false;
 
-  WiFi.begin(ssid, password);
+        if (!sent)
+        {
+            int units = 10;
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+            String msg = "UNITS:" + String(units);
+            webSocket.sendTXT(msg);
 
-  Serial.println("\nWiFi connected");
+            Serial.println("Sent units: " + String(units));
 
-  Serial.print("MAC: ");
-  Serial.println(WiFi.macAddress());
-
-  webSocket.begin(host, port, "/");
-  webSocket.onEvent(webSocketEvent);
-}
-
-void loop() {
-  webSocket.loop();
+            sent = true;
+        }
+    }
 }

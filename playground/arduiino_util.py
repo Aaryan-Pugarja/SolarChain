@@ -4,17 +4,16 @@ from flask_sock import Sock
 app = Flask(__name__)
 sock = Sock(app)
 
-esp_clients = {}
+nodes = {}
 
-sender_mac = "1C:C3:AB:A2:17:40"
-receiver_mac = "00:70:07:3A:63:D4"
+SENDER_MAC = "1C:C3:AB:A2:17:40"
+RECEIVER_MAC = "00:70:07:3A:63:D4"
 
 
 @sock.route("/")
 def websocket(ws):
 
-    device_mac = None
-    print("Client connected")
+    mac = None
 
     while True:
 
@@ -25,37 +24,34 @@ def websocket(ws):
 
         print("Received:", message)
 
-        if message.startswith("ESP_CONNECTED:"):
-            device_mac = message.split(":")[1:]
-            device_mac = ":".join(device_mac)
+        if message.startswith("REGISTER:"):
 
-            esp_clients[device_mac] = ws
+            mac = message.split(":")[1:]
+            mac = ":".join(mac)
 
-            print("Registered ESP:", device_mac)
+            nodes[mac] = ws
+
+            if mac == SENDER_MAC:
+                ws.send("ROLE:sender")
+
+            elif mac == RECEIVER_MAC:
+                ws.send("ROLE:receiver")
+
             continue
 
-        if ws not in esp_clients.values():
 
-            if message == "sender_on":
-                if sender_mac in esp_clients:
-                    esp_clients[sender_mac].send("on")
+        if message.startswith("UNITS:"):
 
-            if message == "sender_off":
-                if sender_mac in esp_clients:
-                    esp_clients[sender_mac].send("off")
+            if mac == SENDER_MAC:
 
-            if message == "receiver_on":
-                if receiver_mac in esp_clients:
-                    esp_clients[receiver_mac].send("on")
+                if RECEIVER_MAC in nodes:
 
-            if message == "receiver_off":
-                if receiver_mac in esp_clients:
-                    esp_clients[receiver_mac].send("off")
+                    nodes[RECEIVER_MAC].send(message)
 
-    print("Client disconnected")
+                    print("Forwarded units to receiver")
 
-    if device_mac and device_mac in esp_clients:
-        del esp_clients[device_mac]
+    if mac in nodes:
+        del nodes[mac]
 
 
 if __name__ == "__main__":
