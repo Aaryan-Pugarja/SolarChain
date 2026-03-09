@@ -5,7 +5,7 @@ const char* ssid = "Monchu 2.4G";
 const char* password = "arpit2005@";
 
 const char* host = "192.168.0.19";
-const uint16_t port = 8080;
+const uint16_t port = 5000;
 
 WebSocketsClient webSocket;
 

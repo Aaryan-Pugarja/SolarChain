@@ -11,6 +11,7 @@ from flask import flash, redirect, render_template, url_for, request  # Flask ut
 from flask_login import login_required, login_user, current_user, logout_user  # Session management
 from sqlalchemy import or_  # SQLAlchemy operator for OR conditions
 
+from Arduino import arduiino_util
 from main import app, bcrypt, db, algod_client  # Flask app instance, bcrypt for hashing, and database
 from main.forms import LoginForm, PurchaseForm, RegistrationForm, SellOrderForm  # WTForms for handling forms
 from main.models import SellOrder, TransactionHistory, User, get_sellers  # Database models and utility function
@@ -246,6 +247,8 @@ def checkout_page():
                     if order.units == 0:
                         db.session.delete(order)
                     db.session.commit()
+
+                    arduiino_util.initiate_transfer(units)
 
                     flash(f"Purchase successful for {form.units.data} units at total {total_price}!", "success")
                     return redirect(url_for('home'))
