@@ -2,7 +2,7 @@
 
 APP_NAME = "SolarChain"
 APP_VERSION = '0.0.1'
-LOCAL_NET: bool = True  # Set to False for Test Net, and True to use Local Net
+LOCAL_NET: bool = False  # Set to False for Test Net, and True to use Local Net
 
 if LOCAL_NET:
     ALGOD_TOKEN = "a" * 64  # Default AlgoKit LocalNet token

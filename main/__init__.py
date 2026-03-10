@@ -27,9 +27,12 @@ bcrypt = Bcrypt(app)
 # Initialize Flask-Login for managing user authentication and sessions
 login_manager = LoginManager(app)
 
-algod_client: AlgodClient = AlgodClient(ALGOD_TOKEN, ALGOD_SERVER_ADDRESS)
+transaction_status = {}
+
+algo_client: AlgodClient | None = None
 try:
-    status = algod_client.status()
+    algo_client = AlgodClient(ALGOD_TOKEN, ALGOD_SERVER_ADDRESS)
+    status = algo_client.status()
     print("Network Status:", status)
 except Exception as e:
     print("Failed to connect:", e)

@@ -30,7 +30,7 @@ https://github.com/user-attachments/assets/db471aab-fb2c-4275-aa5f-2092dedd6da2
   - [*templates*](main/templates): HTML webpages
 - [*tests*](tests): Contain all the tests for our project
 - [*util*](util): Helpful tools
-- [*playground*](playground): Standalone testing before full implementation. See [Smart Contract Run Example](playground/asset_smart_contract_tests.py) and [Asset Creation](playground/asset_creation.py) file
+- [*playground*](playground): Standalone testing before full implementation. See [Smart Contract Run Example](playground/basic_transfer.py) and [Asset Creation](playground/asset_creation.py) file
 - [*Solar Chain*](SolarChain/projects/SolarChain): Algokit Project containing the [Smart Contract](SolarChain/projects/SolarChain/smart_contracts/unit_transfer/unit_contract.py)
 
 # Setup
@@ -55,17 +55,17 @@ Ensure the following pre-requisites are installed and properly configured:
 - **AlgoKit CLI**: Essential for project setup and operations. Install the latest version from [AlgoKit CLI Installation Guide](https://github.com/algorandfoundation/algokit-cli#install). Verify installation with `algokit --version`, expecting `2.5.0` or later.
 - **Start LocalNet**: Use `algokit localnet start` to initiate a local Algorand network.
 
-> For test net just run [this file](playground/asset_smart_contract_tests.py) and make sure the variable `LOCAL_NET` is set to false and accounts are properly setup in the [accounts file](playground/account_constants.py).
+> For test net just run [this file](playground/basic_transfer.py) and make sure the variable `LOCAL_NET` is set to false and accounts are properly setup in the [accounts file](account_constants.py).
 
 > Pycharm was the IDE used.
 
 # Running the program.
 Run [`main.py`](main.py) and navigate to the [website](http://127.0.0.1:5000/).
 
-For standalone smart contract testing navigate to [Standalone file](playground/asset_smart_contract_tests.py)
-> NOTE: If using localnet you will have to create new localnet accounts and asset for testing on localnet. If doing so then mention the new accounts' mnemonic in [this file](playground/account_constants.py) in the `ACCOUNTS_LOCAL` list and update the `ASSET_ID_LOCAL_NET` variable to the new asset's ID. See [this file](playground/asset_creation.py) to create a new asset for localnet.
+For standalone smart contract testing navigate to [Standalone file](playground/basic_transfer.py)
+> NOTE: If using localnet you will have to create new localnet accounts and asset for testing on localnet. If doing so then mention the new accounts' mnemonic in [this file](account_constants.py) in the `ACCOUNTS_LOCAL` list and update the `ASSET_ID_LOCAL_NET` variable to the new asset's ID. See [this file](playground/asset_creation.py) to create a new asset for localnet.
 >
-> For using test net make sure that in the file the variable `LOCAL_NET` is set to false. This will make it automatically use the testnet accounts mentioned in the [accounts file](playground/account_constants.py).
+> For using test net make sure that in the file the variable `LOCAL_NET` is set to false. This will make it automatically use the testnet accounts mentioned in the [accounts file](account_constants.py).
 
 # Common Issues
 ## Docker Errors

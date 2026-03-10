@@ -4,7 +4,7 @@ from algosdk import transaction
 from algosdk.transaction import SuggestedParams, SignedTransaction
 from algosdk.v2client.algod import AlgodClient
 
-from playground.account_constants import ACCOUNTS_LOCAL, ACCOUNTS_TEST_NET
+from account_constants import ACCOUNTS_LOCAL, ACCOUNTS_TEST_NET
 
 # LocalNet configuration
 

@@ -7,7 +7,7 @@ from algosdk.v2client.indexer import IndexerClient
 
 from SolarChain.projects.SolarChain.smart_contracts.artifacts.unit_transfer.asset_purchase_client import \
     AssetPurchaseClient
-from playground.account_constants import ACCOUNTS_LOCAL, ACCOUNTS_TEST_NET, ASSET_ID_TEST_NET, \
+from account_constants import ACCOUNTS_LOCAL, ACCOUNTS_TEST_NET, ASSET_ID_TEST_NET, \
     ASSET_ID_LOCAL_NET
 
 # LocalNet configuration
@@ -62,16 +62,16 @@ app_client.deploy(
     on_update=OnUpdate.AppendApp,
 )
 
-price = 1_000_000
+price = 2_000
 qty = 1
 
-FEES = 3_000
+FEES = 1_000
 transfer(
     algod_client,
     TransferParameters(
         from_account=acc2,
         to_address=app_client.app_address,
-        micro_algos=(FEES+price)*qty+200_000,
+        micro_algos=(FEES+price) * qty,
     )
 )
 

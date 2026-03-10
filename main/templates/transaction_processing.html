@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="content">
+    <div class="page">
+
+        <h1 class="heading">Processing Transaction</h1>
+
+        <p id="status" class="label" style="text-align: center">
+            Submitting blockchain transaction...
+        </p>
+
+        <p id="redirect_info" class="label" style="opacity:0; text-align: center">
+            Redirecting to dashboard shortly...
+        </p>
+
+    </div>
+</div>
+
+<script>
+
+const tx_id = "{{ tx_id }}";
+let finished = false;
+
+async function checkStatus() {
+
+    if (finished) return;
+
+    const res = await fetch("/transaction_status/" + tx_id);
+    const data = await res.json();
+
+    if (data.status === "done") {
+
+        finished = true;
+
+        document.getElementById("status").innerText =
+            "Transaction completed successfully.";
+
+        document.getElementById("redirect_info").style.opacity = "1";
+
+        setTimeout(() => {
+            window.location.href = "/home";
+        }, 3000);
+    }
+
+    if (data.status === "error") {
+
+        finished = true;
+
+        document.getElementById("status").innerText =
+            "Transaction failed.";
+
+        document.getElementById("redirect_info").style.opacity = "1";
+
+        setTimeout(() => {
+            window.location.href = "/home";
+        }, 4000);
+    }
+}
+
+setInterval(checkStatus, 2000);
+
+</script>
+
+{% endblock %}

@@ -5,6 +5,8 @@ managing transaction history. This module integrates Flask, Flask-Login, SQLAlch
 """
 
 import datetime  # Used for timestamping transactions
+import threading
+import uuid
 from typing import List  # Type hint for a list return type
 
 from flask import flash, redirect, render_template, url_for, request  # Flask utilities for routing and responses
@@ -12,7 +14,9 @@ from flask_login import login_required, login_user, current_user, logout_user  #
 from sqlalchemy import or_  # SQLAlchemy operator for OR conditions
 
 from Arduino import arduiino_util
-from main import app, bcrypt, db, algod_client  # Flask app instance, bcrypt for hashing, and database
+from main import app, bcrypt, db, algo_client, \
+    transaction_status  # Flask app instance, bcrypt for hashing, and database
+from main.blockchain.transfer_basic import begin_transaction
 from main.forms import LoginForm, PurchaseForm, RegistrationForm, SellOrderForm  # WTForms for handling forms
 from main.models import SellOrder, TransactionHistory, User, get_sellers  # Database models and utility function
 
@@ -107,7 +111,7 @@ def update_wallet():
             flash("Invalid Wallet Key!", "error")
         else:
             try:
-                acc_info = algod_client.account_info(wallet_key)
+                acc_info = algo_client.account_info(wallet_key)
                 print(acc_info)
                 current_user.wallet_public_key = wallet_key
                 db.session.commit()
@@ -237,21 +241,38 @@ def checkout_page():
             if seller.units >= units:
                 if buyer.units + form.units.data <= 35:
 
+                    tx_id = str(uuid.uuid4())
+                    transaction_status[tx_id] = "processing"
+
+                    threading.Thread(
+                        target=process_blockchain_transaction,
+                        args=(tx_id, units, seller, buyer, order, total_price),
+                        daemon=True
+                    ).start()
+
                     buyer.units += units
                     order.units -= units
                     seller.units -= units
 
-                    history = TransactionHistory(seller_id=seller.id, seller_username=seller.username, buyer_id=buyer.id,
-                                                 units=units, price=total_price, date=datetime.datetime.now())
+                    history = TransactionHistory(
+                        seller_id=seller.id,
+                        seller_username=seller.username,
+                        buyer_id=buyer.id,
+                        units=units,
+                        price=total_price,
+                        date=datetime.datetime.now()
+                    )
+
                     db.session.add(history)
+
                     if order.units == 0:
                         db.session.delete(order)
+
                     db.session.commit()
 
                     arduiino_util.initiate_transfer(units)
 
-                    flash(f"Purchase successful for {form.units.data} units at total {total_price}!", "success")
-                    return redirect(url_for('home'))
+                    return redirect(url_for("transaction_processing", tx_id=tx_id))
                 else:
                     flash(f"Purchase unsuccessful for {form.units.data} units. Your Battery is Full!")
             else:
@@ -260,6 +281,26 @@ def checkout_page():
             flash('Units exceeded!', 'error')
     return render_template("checkout_page.html", title="Checkout", order=order, seller=seller, form=form)
 
+def process_blockchain_transaction(tx_id, units, seller, buyer, order, total_price):
+    try:
+        with app.app_context():
+            transaction_status[tx_id] = "done"
+            begin_transaction(units)
+
+    except Exception as e:
+        print(e)
+        transaction_status[tx_id] = "error"
+
+@app.route("/transaction_processing/<tx_id>")
+@login_required
+def transaction_processing(tx_id):
+    return render_template("transaction_processing.html", tx_id=tx_id)
+
+@app.route("/transaction_status/<tx_id>")
+@login_required
+def transaction_status_api(tx_id):
+    status = transaction_status.get(tx_id, "processing")
+    return {"status": status}
 
 def get_user_sell_orders():
     """

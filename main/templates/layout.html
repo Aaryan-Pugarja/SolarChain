@@ -2,56 +2,69 @@
 <html>
 <head>
     <title>Solar Chain</title>
-    <link href="static/style.css" rel="stylesheet" type="text/css">
-    <script src="static/home_page.js"></script>
-    <script src="static/transaction.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='home_page.js') }}"></script>
+    <script src="{{ url_for('static', filename='transaction.js') }}"></script>
+
 </head>
+
 {% from "_flash_messages.html" import display_messages %}
+
 <body>
 
 <div class="header">
     <div class="nav-bar">
         <div class="nav-links">
-            <div class="horizontal_div" style="gap: 0rem;">
-                <a href="/home" style="display: flex; flex-direction:row;">
-                    <img src="static/Resources/Icons/home.svg" width="32" height="28">
-                    <p style="margin: 0; margin-top: 0.4rem; margin-left: 0.2rem;">Dashboard</p>
+
+            <div class="horizontal_div" style="gap:0;">
+                <a href="/home" style="display:flex;">
+                    <img src="{{ url_for('static', filename='Resources/Icons/home.svg') }}" width="32" height="28">
+                    <p style="margin:0;margin-top:0.4rem;margin-left:0.2rem;">Dashboard</p>
                 </a>
             </div>
-            <div class="horizontal_div" style="gap: 0rem;">
-                <a href="/transactions" style="display: flex; flex-direction:row;">
-                    <img src="static/Resources/Icons/trans.svg" width="32" height="28">
-                    <p style="margin: 0; margin-top: 0.4rem; margin-left: 0.2rem;">Transactions</p>
+
+            <div class="horizontal_div" style="gap:0;">
+                <a href="/transactions" style="display:flex;">
+                    <img src="{{ url_for('static', filename='Resources/Icons/trans.svg') }}" width="32" height="28">
+                    <p style="margin:0;margin-top:0.4rem;margin-left:0.2rem;">Transactions</p>
                 </a>
             </div>
-            <div class="horizontal_div" style="gap: 0rem;">
-                <a href="/about" style="display: flex; flex-direction:row;">
-                    <img src="static/Resources/Icons/info.svg" width="32" height="28">
-                    <p style="margin: 0; margin-top: 0.4rem; margin-left: 0.2rem;">About</p>
+
+            <div class="horizontal_div" style="gap:0;">
+                <a href="/about" style="display:flex;">
+                    <img src="{{ url_for('static', filename='Resources/Icons/info.svg') }}" width="32" height="28">
+                    <p style="margin:0;margin-top:0.4rem;margin-left:0.2rem;">About</p>
                 </a>
             </div>
+
         </div>
-        <div class="account-link" style="width: max-content; margin-left: 50em; ">
-            <div class="horizontal_div" style="gap: 0rem;">
-                <a href="/register" style="display: flex; flex-direction:row;">
-                    <img src="static/Resources/Icons/account.svg" width="32" height="28">
-                    <p style="margin: 0; margin-top: 0.4rem; margin-left: 0.2rem;">
+
+        <div class="account-link" style="width:max-content;margin-left:50em;">
+            <div class="horizontal_div" style="gap:0;">
+                <a href="/register" style="display:flex;">
+                    <img src="{{ url_for('static', filename='Resources/Icons/account.svg') }}" width="32" height="28">
+                    <p style="margin:0;margin-top:0.4rem;margin-left:0.2rem;">
                         {{ current_user.username if current_user.is_authenticated else "Sign Up or Log-in" }}
                     </p>
                 </a>
             </div>
         </div>
+
     </div>
 </div>
 
 <div class="container">
-  {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 </div>
 
 <div class="footer">
-    <p>2024 &copy; Solar Chain. All rights reserved.</p>
+    <p>2026 &copy; Solar Chain. All rights reserved.</p>
+
     <a class="ext-links" href="https://github.com/GlaucousGlaucus/Algorand-Blockchain-Project">
-        <img alt="Lyrics Editor" src="static/Resources/Icons/github-mark-white.svg"/>
+        <img alt="Github"
+             src="{{ url_for('static', filename='Resources/Icons/github-mark-white.svg') }}">
     </a>
 </div>
 

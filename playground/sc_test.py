@@ -1,14 +1,11 @@
-import json
-
 from algosdk.transaction import ApplicationCallTxn, ApplicationCreateTxn, OnComplete, PaymentTxn, StateSchema, \
     calculate_group_id
 from algosdk.v2client import algod
 from algosdk import account, mnemonic
-
-from playground.account_constants import ACCOUNTS
+from account_constants import ACCOUNTS_TEST_NET
 
 # Replace these with your account details
-creator_mnemonic = ACCOUNTS[3]
+creator_mnemonic = ACCOUNTS_TEST_NET[0]
 algod_token = ""
 algod_address = "https://testnet-api.algonode.cloud"
 
