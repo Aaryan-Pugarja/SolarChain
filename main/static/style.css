@@ -1085,3 +1085,67 @@ img.account_menubar {
     width: 100%;
     margin-bottom: 0.6em;
 }
+.checkout-container{
+    display:flex;
+    gap:60px;
+    padding:40px;
+    align-items:flex-start;
+}
+
+.checkout-left{
+    flex:1;
+}
+
+.checkout-title{
+    font-size:48px;
+    margin-bottom:10px;
+}
+
+.checkout-caption{
+    color:#aaa;
+    margin-bottom:25px;
+}
+
+.seller-info{
+    background:#2b2b2b;
+    padding:15px;
+    border-radius:8px;
+}
+
+.checkout-right{
+    flex:1;
+    background:#2b2b2b;
+    padding:30px;
+    border-radius:10px;
+}
+
+.checkout-form{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-field{
+    padding:8px;
+    border-radius:5px;
+    border:none;
+}
+
+.price-display{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.checkout-btn{
+    margin-top:10px;
+}
+
+.error{
+    color:red;
+    font-size:12px;
+}

@@ -3,29 +3,67 @@
 
 <div class="content">
     <div class="page" style="width: 95vw;">
-        <h1 class="heading">Checkout</h1>
-        <h2 class="heading">Order ID: {{ order.id }}</h2>
-        <h3>Seller Details: {{ seller.username }}</h3>
+        <div class="checkout-container">
 
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <div>
-                <label>Units to Buy:</label>
-                {{ form.units(size=32) }}
-                {% for error in form.units.errors %}
-                <span style="color: red;">{{ error }}</span>
-                {% endfor %}
+            <div class="checkout-left">
+                <h1 class="checkout-title">Checkout</h1>
+                <p class="checkout-caption">
+                    Complete your purchase of solar energy units.
+                    Enter the number of units you wish to buy and confirm the transaction.
+                </p>
+
+                <div class="seller-info">
+                    <strong>Seller:</strong> {{ seller.username }} <br>
+                    <strong>Order ID:</strong> {{ order.id }}
+                </div>
             </div>
-            <div>
-                <button class="button" type="submit">{{ form.submit.label }}</button>
+
+            <div class="checkout-right">
+
+                <form action="" method="post" class="checkout-form">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group">
+                        <label>Units to Buy</label>
+                        {{ form.units(class="input-field", id="unitsInput") }}
+
+                        {% for error in form.units.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Total Price</label>
+                        <div class="price-display">
+                            ₹ <span id="totalPrice">0</span>
+                        </div>
+                    </div>
+
+                    <button class="button checkout-btn" type="submit">
+                        {{ form.submit.label }}
+                    </button>
+
+                </form>
+
+                {{ display_messages() }}
+
             </div>
-            <div>
-                <label>Total Price:</label>
-                <span id="totalPrice">{{ form.units.data * 5 if form.units.data else 0 }}</span>
-            </div>
-        </form>
-        {{ display_messages() }}
+
+        </div>
     </div>
 </div>
+
+<script>
+    const pricePerUnit = {{ order.price }};
+    const unitsInput = document.getElementById("unitsInput");
+    const totalPrice = document.getElementById("totalPrice");
+
+    function updatePrice() {
+        const units = parseFloat(unitsInput.value) || 0;
+        totalPrice.textContent = (units * pricePerUnit).toFixed(2);
+    }
+
+    unitsInput.addEventListener("input", updatePrice);
+</script>
 
 {% endblock content %}
