@@ -45,13 +45,13 @@ def home():
     return render_template("index.html", user_data=dashboard_info, units_used=units)
 
 
-def units_used(current, total: int = 35):
+def units_used(current, total: int = 36):
     """
     Calculate the percentage of units used by the user.
 
     Args:
         current (int): Current units of the user.
-        total (int): Total units available. Defaults to 35.
+        total (int): Total units available. Defaults to 36.
 
     Returns:
         int: Percentage of units used.
@@ -239,7 +239,7 @@ def checkout_page():
             units = form.units.data
 
             if seller.units >= units:
-                if buyer.units + form.units.data <= 35:
+                if buyer.units + form.units.data <= 36:
 
                     tx_id = str(uuid.uuid4())
                     transaction_status[tx_id] = "processing"
