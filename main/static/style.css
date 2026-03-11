@@ -150,11 +150,11 @@ html {
     flex-direction: column;
     color: #fff;
     box-sizing: border-box;
-    width: 90%;
     background: #303030;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: min(1100px, 92%);
 }
 
 .page h1 {
