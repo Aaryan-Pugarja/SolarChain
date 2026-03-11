@@ -4,9 +4,8 @@ from main import app
 
 sock = Sock(app)
 
-SENDER_MAC = "1C:C3:AB:A2:17:40"
-RECEIVER_MAC = "00:70:07:3A:63:D4"
-
+SENDER_MAC = "F8:B3:B7:7A:68:64"
+RECEIVER_MAC = "AC:15:18:D6:0F:7C"
 nodes = {}
 
 @sock.route("/")
