@@ -1149,3 +1149,30 @@ img.account_menubar {
     color:red;
     font-size:12px;
 }
+
+.input{
+    padding:8px 10px;
+    border-radius:6px;
+    border:1px solid #444;
+    background:#1e1e1e;
+    color:#fff;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.05s ease;
+}
+
+.input:hover{
+    border-color:#6f5ed7;
+}
+
+.input:focus{
+    outline:none;
+    border-color:#6f5ed7;
+    box-shadow:0 0 0 2px rgba(111,94,215,0.25);
+}
+
+.input:active{
+    transform:scale(0.995);
+}
